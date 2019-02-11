@@ -9,18 +9,18 @@ def create_table():
 
 
 def dynamic_data_entry():
-
-
-    gas_wear_tear = .18
+    # data based on small 4 door sedan.  25 mpg at $2.15 a gallon.  Maintenance is calculated at $500 per year at 20,000 miles per year making $0.25 per mile.
+    
+    gas_wear_tear = .32
     date = datetime.datetime.now()
-    timestamp = date.strftime("%Y-%m-%d %H:%M ")
+    date_stamp = date.strftime("%Y-%m-%d  ")
     order_price = float(input("Order Price: "))
     amt_given = float(input("Amount Given: "))
     grossTip = amt_given - order_price
     print("Gross Tip: ", format(grossTip, ".2f"))
-    totalTip = grossTip + 1.25
-    print("Tip with Delivery: ",format(totalTip,".2f"))
-    print("Time Delivered: ",timestamp)
+    totalTip = grossTip + 1.75
+    print("Tip with Delivery: ", format(totalTip, ".2f"))
+    print("Date Delivered: ", date_stamp)
     miles = float(input("Round Trip Miles: "))
     netTip = totalTip - (miles * gas_wear_tear)
     print("Your net tip: ", format(netTip, ".2f"))
@@ -28,17 +28,24 @@ def dynamic_data_entry():
     race = race.upper()
 
     c.execute("INSERT INTO pizzaData (grossTip, totalTip, netTip, miles, date, race) VALUES (?,?,?,?,?,?)",
-              (format(grossTip,".2f"), format(totalTip,".2f"), format(netTip,".2f"), miles, timestamp, race))
+              (format(grossTip, ".2f"), format(totalTip, ".2f"), format(netTip, ".2f"), miles, date_stamp, race))
     conn.commit()
     print()
     run_again = input("Run again? y or n: ")
-    if run_again == "y":
+    run_again = run_again.upper()
+    if run_again == "Y":
         dynamic_data_entry()
-    elif run_again == "n":
+    elif run_again == "N":
         main()
 
+
 def status_check():
-    choice = input("Press 1 for Total Tips, \nPress 2 for Net Tips, \nPress 3 for total Miles, \nPress 4 for average grossTip,\nPress 5 for highest tip,\nPress 0 for Home: ")
+    choice = input("Press 1 for Total Tips\n"
+                   "Press 2 for Net Tips\n"
+                   "Press 3 for total Miles\n"
+                   "Press 4 for average grossTip\n"
+                   "Press 5 for highest tip\n"
+                   "Press 0 for Home: ")
     if choice == "1":
         show_total_tips()
     elif choice == "2":
@@ -55,11 +62,13 @@ def status_check():
         print("Please, only 1,2, or 3")
         status_check()
 
+
 def show_total_tips():
     c.execute('SELECT SUM(totalTip) FROM pizzaData')
     for row in c.fetchall():
         print(row)
         status_check()
+
 
 def show_net_tips():
     c.execute('SELECT SUM(netTip) FROM pizzaData')
@@ -67,11 +76,13 @@ def show_net_tips():
         print(row)
         status_check()
 
+
 def show_miles():
     c.execute('SELECT SUM(miles) FROM pizzaData')
     for row in c.fetchall():
         print(row)
         status_check()
+
 
 def show_avg_grossTips():
     c.execute('SELECT AVG(grossTip) FROM pizzaData')
@@ -83,7 +94,7 @@ def show_avg_grossTips():
 def show_hi_tip():
     c.execute('SELECT MAX(grossTip) FROM pizzaData')
     for row in c.fetchall():
-        print(row)
+        print(row, ' is your highest tip')
         status_check()
 
 
