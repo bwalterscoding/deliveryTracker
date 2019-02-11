@@ -28,7 +28,7 @@ def dynamic_data_entry():
     race = race.upper()
 
     c.execute("INSERT INTO pizzaData (grossTip, totalTip, netTip, miles, date, race) VALUES (?,?,?,?,?,?)",
-              (format(grossTip,".2f"), format(totalTip,".2f"), netTip, miles, timestamp, race))
+              (format(grossTip,".2f"), format(totalTip,".2f"), format(netTip,".2f"), miles, timestamp, race))
     conn.commit()
     print()
     run_again = input("Run again? y or n: ")
@@ -38,7 +38,7 @@ def dynamic_data_entry():
         main()
 
 def status_check():
-    choice = input("Press 1 for Total Tips, Press 2 for Net Tips, Press 3 for total Miles, press 4 for average grossTip, press 0 go back Home: ")
+    choice = input("Press 1 for Total Tips, \nPress 2 for Net Tips, \nPress 3 for total Miles, \nPress 4 for average grossTip,\nPress 5 for highest tip,\nPress 0 for Home: ")
     if choice == "1":
         show_total_tips()
     elif choice == "2":
@@ -47,6 +47,8 @@ def status_check():
         show_miles()
     elif choice == "4":
         show_avg_grossTips()
+    elif choice == "5":
+        show_hi_tip()
     elif choice == "0":
         main()
     else:
@@ -73,6 +75,13 @@ def show_miles():
 
 def show_avg_grossTips():
     c.execute('SELECT AVG(grossTip) FROM pizzaData')
+    for row in c.fetchall():
+        print(row)
+        status_check()
+
+
+def show_hi_tip():
+    c.execute('SELECT MAX(grossTip) FROM pizzaData')
     for row in c.fetchall():
         print(row)
         status_check()
