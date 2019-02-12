@@ -22,17 +22,18 @@ def main():
 
 def options_menu():
     valid_choices = ('1', '2', '3', '4', '5', '0')
-    choice = input('1: View Data\n'
+    choice = input('1: View NetTip Data\n'
                    '2: Change Gas / Wear Rate\n'
                    '3: Change Delivery Charge\n'
                    '0: Go Home: ')
     while choice not in valid_choices:
         choice = input('ERROR! Try again\n'
-                       '1: View Data\n'
+                       '1: View NetTip Data\n'
                        '2: Change Gas / Wear Rate\n'
                        '3: Change Delivery Charge\n'
                        '0: Go Home: ')
     if choice == '1':
+        myDelivery.view_net_tip()
         myDelivery.display_data()
     elif choice == '2':
         myDelivery.change_gas_wear_rate()

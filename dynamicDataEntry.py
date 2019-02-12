@@ -1,6 +1,10 @@
 import datetime
 date = datetime.datetime.now()
 
+import sqlite3
+conn = sqlite3.connect('deliveryData.db')
+c = conn.cursor()
+
 
 class DynamicDataEntry:
 
@@ -47,10 +51,7 @@ class DynamicDataEntry:
                                 'Date Delivered: ', self.date_stamp)
 
     def put_in_database(self):
-        import sqlite3
 
-        conn = sqlite3.connect('deliveryData.db')
-        c = conn.cursor()
 
         c.execute(
             'CREATE TABLE IF NOT EXISTS deliveryData(grossTip REAL, miles REAL, date REAL, race TEXT, delCharge REAL, gasWearCost REAL)'
@@ -59,4 +60,9 @@ class DynamicDataEntry:
         c.execute("INSERT INTO deliveryData (grossTip, miles, date, race, delCharge, gasWearCost) VALUES (?, ?, ?, ?, ?, ?)",
                   (self.gross_tip, self.miles, self.date_stamp, self.race, self.delivery_charge, self.gas_wear_per_mile))
         conn.commit()
+
+    def view_net_tip(self):
+        c.execute('SELECT (SUM(grossTip) + SUM(delCharge)) - (SUM(miles)* SUM(gasWearCost)) FROM deliveryData')
+        for row in c.fetchall():
+            print(row)
 
