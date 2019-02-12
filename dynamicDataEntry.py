@@ -15,6 +15,7 @@ class DynamicDataEntry:
         self.miles = 0
         self.race = ''
         self.date_stamp = date.strftime("%m-%d-%Y  ")
+        self.run_counted = 1
 
     def get_gross_tip(self):
         order_price = float(input('Enter order price: '))
@@ -41,6 +42,7 @@ class DynamicDataEntry:
                               'WHITE, BLACK, LATINO, ASIAN, OTHER: ')
             self.race = self.race.upper()
 
+
     def display_data(self):
         print('\nDATA\n'
               'Current Gas&Wear Rate: ', self.gas_wear_per_mile, '\n'
@@ -48,21 +50,16 @@ class DynamicDataEntry:
                     'Gross Tip: ', format(self.gross_tip), '\n'
                         'Miles: ', self.miles, '\n'
                             'Race: ', self.race, '\n'
-                                'Date Delivered: ', self.date_stamp)
+                                'Date Delivered: ', self.date_stamp, '\n'
+                                    'Run Counted: ', self.run_counted)
 
     def put_in_database(self):
-
-
         c.execute(
-            'CREATE TABLE IF NOT EXISTS deliveryData(grossTip REAL, miles REAL, date REAL, race TEXT, delCharge REAL, gasWearCost REAL)'
+            'CREATE TABLE IF NOT EXISTS deliveryData(grossTip REAL, miles REAL, date REAL, race TEXT, delCharge REAL, gasWearCost REAL, runCounted REAL)'
         )
 
-        c.execute("INSERT INTO deliveryData (grossTip, miles, date, race, delCharge, gasWearCost) VALUES (?, ?, ?, ?, ?, ?)",
-                  (self.gross_tip, self.miles, self.date_stamp, self.race, self.delivery_charge, self.gas_wear_per_mile))
+        c.execute("INSERT INTO deliveryData (grossTip, miles, date, race, delCharge, gasWearCost, runCounted) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                  (self.gross_tip, self.miles, self.date_stamp, self.race, self.delivery_charge, self.gas_wear_per_mile, self.run_counted))
         conn.commit()
 
-    def view_net_tip(self):
-        c.execute('SELECT (SUM(grossTip) + SUM(delCharge)) - (SUM(miles)* SUM(gasWearCost)) FROM deliveryData')
-        for row in c.fetchall():
-            print(row)
 
